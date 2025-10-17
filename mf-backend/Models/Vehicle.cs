@@ -12,16 +12,18 @@ namespace mf_backend.Models
         [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Model Year is required")]
-        public string ModelYear { get; set; }
-
         [Required(ErrorMessage = "Plate is required")]
         public string Plate { get; set; }
 
-        [Required(ErrorMessage = "Year is required")]
-        public int Year { get; set; }
+        [Required(ErrorMessage = "Model Year is required")]
+        [Display(Name = "Model Year")]
+        public string ModelYear { get; set; }
+
 
         [Required(ErrorMessage = "Factory Year is required")]
+        [Display(Name = "Year of Manufacture")]
         public string FactoryYear { get; set; }
     }
 }
+
+
