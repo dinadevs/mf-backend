@@ -16,7 +16,6 @@ namespace mf_backend.Models
         public string ModelYear { get; set; }
 
         [Required(ErrorMessage = "Plate is required")]
-
         public string Plate { get; set; }
 
         [Required(ErrorMessage = "Year is required")]
