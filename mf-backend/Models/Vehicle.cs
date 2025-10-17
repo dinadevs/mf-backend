@@ -23,6 +23,8 @@ namespace mf_backend.Models
         [Required(ErrorMessage = "Factory Year is required")]
         [Display(Name = "Year of Manufacture")]
         public string FactoryYear { get; set; }
+
+        public ICollection<Consumption> Consumptions { get; set; }
     }
 }
 

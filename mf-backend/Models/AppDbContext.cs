@@ -7,5 +7,7 @@ namespace mf_backend.Models
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Vehicle> Vehicles { get; set; }
+
+        public DbSet<Consumption> Consumptions { get; set; }
     }
 }
