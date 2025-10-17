@@ -1,6 +1,7 @@
 ﻿using mf_backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace mf_backend.Controllers
@@ -58,6 +59,18 @@ namespace mf_backend.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicle);
+        }
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var data = await _context.Vehicles.FindAsync(id);
+
+            if (data == null)
+                return NotFound();
+
+            return View(data);
         }
     }
 }
