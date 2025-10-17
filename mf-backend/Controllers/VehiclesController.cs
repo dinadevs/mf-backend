@@ -16,5 +16,20 @@ namespace mf_backend.Controllers
             var data = await _context.Vehicles.ToListAsync();
             return View(data);
         }
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(Vehicle vehicle)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Vehicles.Add(vehicle);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(vehicle);
+        }
     }
 }
