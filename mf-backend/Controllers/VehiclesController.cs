@@ -102,5 +102,28 @@ namespace mf_backend.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Report(int? id)
+        {
+            if(id == null)
+                return NotFound();
+
+            var vehicle = await _context.Vehicles.FindAsync(id);
+
+            if(vehicle == null)
+                return NotFound();
+
+            var Consumptions = await _context.Consumptions
+                .Where(c => c.VehicleId == vehicle.Id)
+                .OrderByDescending(c => c.Date)
+                .ToListAsync();
+
+            decimal total = Consumptions.Sum(c => c.Value);
+
+            ViewBag.Vehicle = vehicle;
+            ViewBag.TotalConsumption = total;
+
+            return View(Consumptions);
+        }
     }
 }

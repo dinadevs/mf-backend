@@ -15,7 +15,7 @@ namespace mf_backend.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Vehicles");
         }
 
         public IActionResult Privacy()
