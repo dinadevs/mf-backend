@@ -57,6 +57,7 @@ namespace mf_backend.Controllers
         {
             if (ModelState.IsValid)
             {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -96,6 +97,7 @@ namespace mf_backend.Controllers
             {
                 try
                 {
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                     _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
