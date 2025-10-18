@@ -1,4 +1,5 @@
 ﻿using mf_backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace mf_backend.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class VehiclesController : Controller
     {
         private readonly AppDbContext _context;

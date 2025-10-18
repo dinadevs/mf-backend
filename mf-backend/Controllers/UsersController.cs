@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using mf_backend.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using mf_backend.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
-namespace mf_backend.Controllers
+namespace FirstBackendProject.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly AppDbContext _context;
@@ -18,10 +22,75 @@ namespace mf_backend.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(User user)
+        {
+            var data = await _context.Users.FindAsync(user.Id);
+
+            if (data == null)
+            {
+                ViewBag.Message = "Invalid user or password";
+                return View();
+            }
+
+            bool isValidPassword = BCrypt.Net.BCrypt.Verify(user.Password, data.Password);
+
+            if (isValidPassword)
+            {
+                var clams = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, data.Name),
+                    new Claim(ClaimTypes.NameIdentifier, data.Id.ToString()),
+                    new Claim(ClaimTypes.Role, data.Profile.ToString())
+                };
+
+                var userIdentity = new ClaimsIdentity(clams, "Login");
+                ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
+
+                var props = new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    AllowRefresh = true,
+                    ExpiresUtc = DateTime.UtcNow.ToLocalTime().AddHours(8)
+                };
+
+                await HttpContext.SignInAsync(principal, props);
+
+                return Redirect("/");
+            }
+            else
+            {
+                ViewBag.Message = "Invalid user or password";
+            }
+
+            return View();
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+
+            return RedirectToAction("Login", "Users");
+        }
+
         // GET: Users
         public async Task<IActionResult> Index()
         {
             return View(await _context.Users.ToListAsync());
+        }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
 
         // GET: Users/Details/5
